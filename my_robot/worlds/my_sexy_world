@@ -81,10 +81,10 @@
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
     <state world_name='default'>
-      <sim_time>842 304000000</sim_time>
-      <real_time>77 822398936</real_time>
-      <wall_time>1559469046 756762933</wall_time>
-      <iterations>77629</iterations>
+      <sim_time>945 888000000</sim_time>
+      <real_time>181 648336895</real_time>
+      <wall_time>1559468917 71104491</wall_time>
+      <iterations>181213</iterations>
       <model name='SimpleFloor'>
         <pose frame=''>8.03197 5.72247 0 0 -0 0</pose>
         <scale>1 1 1</scale>
@@ -292,10 +292,10 @@
         </link>
       </model>
       <model name='my_white_ball'>
-        <pose frame=''>16.0249 3.93452 0.1 0 -0 0</pose>
+        <pose frame=''>15.9134 1.81732 0.1 0 -0 0</pose>
         <scale>1 1 1</scale>
         <link name='link'>
-          <pose frame=''>16.0249 3.93452 0.1 0 -0 0</pose>
+          <pose frame=''>15.9134 1.81732 0.1 0 -0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
@@ -327,7 +327,7 @@
     </state>
     <gui fullscreen='0'>
       <camera name='user_camera'>
-        <pose frame=''>15.301 15.5656 17.0065 0 0.815644 -2.05499</pose>
+        <pose frame=''>15.9482 30.781 40.5429 0 0.815644 -2.05499</pose>
         <view_controller>orbit</view_controller>
         <projection_type>perspective</projection_type>
       </camera>
@@ -1794,7 +1794,7 @@
       </link>
       <static>0</static>
       <allow_auto_disable>1</allow_auto_disable>
-      <pose frame=''>16.0249 3.93452 0 0 -0 0</pose>
+      <pose frame=''>15.9134 1.81732 0 0 -0 0</pose>
     </model>
   </world>
 </sdf>
