@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <launch>
-  <!-- -----------------USER PARAMETERS----------------- -->
+  <!-- USER PARAMETERS -->
   <!-- Robot pose -->
   <arg name="x" default="0"/>
   <arg name="y" default="0"/>
@@ -12,7 +12,7 @@
 
   <!-- World File -->
   <arg name="world_file" default="$(find my_robot)/worlds/my_sexy_world.world"/>
-  <!-- ------------------------------------------------- -->
+  <!-- - -->
 
   <!-- Launch other relevant files-->
   <include file="$(find my_robot)/launch/robot_description.xml"/>

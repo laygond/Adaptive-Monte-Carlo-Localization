@@ -146,7 +146,7 @@
 		<dynamics damping="1.0" friction="1.0"/>
 	</joint>
 
-	<joint name="base_to_rwheel" type="continuos">
+	<joint name="base_to_rwheel" type="continuous">
 		<parent link="base_link"/>
 		<child link="rwheel"/>
 		<origin xyz="0 -0.115 0.046" rpy="-1.5708 0 0"/>
