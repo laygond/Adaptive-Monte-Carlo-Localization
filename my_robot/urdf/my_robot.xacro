@@ -90,6 +90,12 @@
 			<origin rpy="0 0 0" xyz="0 0 0"/>
 			<material name="black"/>
 		</visual>
+		<collision>
+			<geometry>
+				<cylinder length="0.05" radius="0.15"/>
+			</geometry>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+		</collision>
 		<inertial>
 			<mass value="5" />
 			<origin xyz="0 0 0" rpy="0 0 0"/>
@@ -107,6 +113,12 @@
 			<origin rpy="0 0 0" xyz="0 0 0"/>
 			<material name="black"/>
 		</visual>
+		<collision>
+			<geometry>
+				<cylinder length="0.05" radius="0.15"/>
+			</geometry>
+			<origin rpy="0 0 0" xyz="0 0 0"/>
+		</collision>
 		<inertial>
 			<mass value="5" />
 			<origin xyz="0 0 0" rpy="0 0 0"/>
@@ -121,7 +133,6 @@
 		<collision>
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
-				<!--mesh filename="package://simple_arm/meshes/camera.dae"/-->
 				<sphere radius="0.005"/>
 			</geometry>
 		</collision>
@@ -146,7 +157,6 @@
 		<collision>
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
-				<mesh filename = "package://my_robot/meshes/hokuyo.dae"/>
 				<box size="0.1 0.1 0.1"/>
 			</geometry>
 		</collision>
@@ -178,7 +188,7 @@
 	<joint name="base_to_lwheel" type="continuous">
 		<parent link="base_link"/>
 		<child link="lwheel"/>
-		<origin xyz="0 0.15 0" rpy="0 0 0"/>
+		<origin xyz="0 0.15 0" rpy="-${PI/2} 0 0"/>
 		<axis xyz="0 1 0" rpy="0 0 0"/>
 		<limit effort="10000" velocity="1000"/>
 		<dynamics damping="1.0" friction="1.0"/>
@@ -187,7 +197,7 @@
 	<joint name="base_to_rwheel" type="continuous">
 		<parent link="base_link"/>
 		<child link="rwheel"/>
-		<origin xyz="0 -0.15 0" rpy="-{PI/2} 0 0"/>
+		<origin xyz="0 -0.15 0" rpy="-${PI/2} 0 0"/>
 		<axis xyz="0 1 0" rpy="0 0 0"/>
 		<limit effort="10000" velocity="1000"/>
 		<dynamics damping="1.0" friction="1.0"/>
