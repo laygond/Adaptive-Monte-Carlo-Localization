@@ -8,7 +8,6 @@
   </node>
 
   <!--Publish robot state to TF-->
- <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
-    <!-- remap from="/joint_states" to="/simple_arm/joint_states" / -->
-  <!-- /node --> 
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen"/>
+  
 </launch>
