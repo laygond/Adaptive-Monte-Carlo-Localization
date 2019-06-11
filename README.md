@@ -17,7 +17,9 @@ This repo explain the process of localizing a white ball through a robot's onboa
 
 #### Gazebo Preexisting Plugins
 Shared object file created from compiling C++ source code. They allow interaction with Rviz and Gazebo.
-- `libgazebo_ros_diff_drive.so` accepts information from the robot's model: joint names, link dimensions, etc to calculate and publish the robot's odometry informtion to the topic that you specify.   
+- `libgazebo_ros_diff_drive.so` is the plugin for the wheel joints. It accepts information from the robot's model: joint names, link dimensions, etc to calculate and publish the robot's odometry informtion to the topic that you specify. In our case cmd_vel topic
+- is trhe plugin for the camera sensor. In our case rgb/image_raw topic
+- is the plugin for the hokuyo lidar.  In our case scan topic
 
 
 
