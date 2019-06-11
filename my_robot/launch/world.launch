@@ -15,7 +15,7 @@
   <!-- - -->
 
   <!-- Launch other relevant files-->
-  <include file="$(find my_robot)/launch/robot_description.xml"/>
+  <include file="$(find my_robot)/launch/robot_description.launch"/>
 
   <!-- Launch Gazebo World -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
