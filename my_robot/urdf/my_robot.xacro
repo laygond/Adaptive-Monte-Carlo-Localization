@@ -129,7 +129,7 @@
 	</link>
 
 
-	<link name="camera_link">
+	<link name="camera">
 		<collision>
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
@@ -153,7 +153,7 @@
 		</inertial>
 	</link>
 
-	<link name="hokuyo_link">
+	<link name="hokuyo">
 		<collision>
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
@@ -207,12 +207,12 @@
 		<axis xyz="0 1 0" />
 		<origin xyz="0.2 0 0" rpy="0 0 0"/>
 		<parent link="base_link"/>
-		<child link="camera_link"/>
+		<child link="camera"/>
 	</joint>
 
 	<joint name="hokuyo_joint" type="fixed">
 		<parent link="base_link"/>
-		<child link="hokuyo_link"/>
+		<child link="hokuyo"/>
 		<origin xyz="0.15 0 0.1" rpy="0 0 0"/> 
 		<axis xyz="0 1 0" />
 	</joint>
