@@ -4,7 +4,38 @@ This repo explain the process of localizing a white ball through a robot's onboa
 
 ![alt text](README_images/follow.gif)
 
-### Directory Structure
+## Directory Structure
+```
+.Ball-Follower-Robot
+|-- README.md
+|-- README_images				# Images used by README.md
+|   `-- ...
+|-- ball_chaser
+|   |-- CMakeLists.txt				# Compiler Instructions
+|   |-- package.xml				# Package Info
+|   |-- launch
+|   |   `-- ball_chaser.launch			# Launches nodes from this package
+|   |-- src					# Source Folder: Nodes
+|   |   |-- drive_bot.cpp
+|   |   `-- process_image.cpp
+|   `-- srv					# Service Folder
+|       `-- DriveToTarget.srv
+`-- my_robot
+    |-- CMakeLists.txt				# Compiler Instructions
+    |-- package.xml				# Package Info
+    |-- launch
+    |   |-- robot_description.launch		# Used by world.launch to launch robot
+    |   `-- world.launch			# Launches world & robot in Gazebo and Rviz 
+    |-- meshes					# Used in my_robot.xacro for visual appearance
+    |   |-- camera.dae
+    |   `-- hokuyo.dae
+    |-- urdf
+    |   |-- my_robot.gazebo			# Gazebo Plugins: Robot's sensors
+    |   `-- my_robot.xacro			# Robot 
+    `-- worlds
+        |-- empty.world				# Extra world
+        `-- my_sexy_world.world			# Main world
+```
 
 #### ROS Packages 
 - `my_robot` holds the robot physical design and pluggins to interact with actuators and sensors.
@@ -21,8 +52,9 @@ Shared object file created from compiling C++ source code. They allow interactio
 - `libgazebo_ros_laser.so` is the plugin for the hokuyo lidar. It requires hokuyo urdf link name and it publishes to the hokuyo topic: /scan.
 
 
-### Steps to Launch Simulation
-#### Create a catkin_ws (unless you already have one!)
+## Steps to Launch Simulation
+
+### Create a catkin_ws (unless you already have one!)
 /home/workspace can be any directory you want
 ```sh
 $ cd /home/workspace/
@@ -31,13 +63,13 @@ $ cd catkin_ws/src/
 $ catkin_init_workspace
 ```
 
-#### Clone the repo in catkin_ws/src/
+### Clone the repo in catkin_ws/src/
 ```sh
 $ cd /home/workspace/catkin_ws/src/
 $ git clone https://github.com/laygond/Ball-Follower-Robot.git
 ```
 
-#### Install packages Dependencies
+### Install packages Dependencies
 ```sh
 $ cd /home/workspace/catkin_ws
 $ source devel/setup.bash
@@ -45,22 +77,22 @@ $ rosdep -i install my_robot
 $ rosdep -i install process_image
 ```
 
-#### Build packages
+### Build packages
 ```sh
 $ cd /home/workspace/catkin_ws/ 
 $ catkin_make
 $ source devel/setup.bash
 ```
+---
+## Part 1: Interact with robot
 
-### Part 1: Interact with robot
-
-#### Launch simulation: load robot in Gazebo and Rviz
+### Launch simulation: load robot in Gazebo and Rviz
 From anywhere inside catkin_ws
 ```sh
 $ roslaunch my_robot world.launch
 ```
 
-#### Read RViz Sensor Stream
+### Read RViz Sensor Stream
 Setup RViz to visualize the sensor readings. On the left side of RViz, under Displays:
 
 - Select odom for fixed frame
@@ -76,10 +108,10 @@ Sensor stream can be called from terminal as well. For example for camera:
 $ rosrun image_view image_view image:=/camera/rgb/image_raw
 ```
 
-#### Drive robot around (Optional)
+### Drive robot around (Optional)
 There are two options to acomplish this.
 
-##### Publishing Directly
+#### Publishing Directly
 Open a new terminal window and publish velocity commands directly to the robot's wheel actuators. To stop vehicle publish zero values and then Ctrl + C.
 ```sh
 $ cd /home/workspace/catkin_ws/
@@ -93,7 +125,7 @@ angular:
   y: 0.0
   z: 0.1" 
 ```
-##### Calling the Service
+#### Calling the Service
 The other option is to test the service by requesting different sets of velocities from the terminal.
 
 Run the drive_bot node only
@@ -111,14 +143,13 @@ $ rosservice call /ball_chaser/command_robot "linear_x: 0.5
 angular_z: 0.0"  # This request should drive your robot forward
 ```
 
-### Part 2: Activate Ball Follower
-#### Launch remaining nodes
+## Part 2: Activate Ball Follower
+### Launch remaining nodes
 From anywhere inside catkin_ws run drive_bot and process_image nodes. This can be done by executing ball_chaser.launch:
 ```sh
 $ cd /home/workspace/catkin_ws/
 $ source devel/setup.bash
 $ roslaunch ball_chaser ball_chaser.launch
 ```
-
 
 ![alt text](README_images/follow1.gif)
