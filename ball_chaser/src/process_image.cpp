@@ -25,6 +25,7 @@ void process_image_callback(const sensor_msgs::Image img)
 
     int white_pixel = 255;
 	int ball_location; 
+    bool ball_found = false;
 
     // Loop through each pixel in the image and check if there's a bright white one
     // Then, identify if this pixel falls in the left, mid, or right side of the image
@@ -36,15 +37,28 @@ void process_image_callback(const sensor_msgs::Image img)
             
 			//Check location of white pixels: Left, Center, Right
 			ball_location = i%img.step;
-			
-			if(ball_location < img.step/3) drive_robot(0.1,-0.5);
-			else if(ball_location < 2*img.step/3) drive_robot(0.5,0);
-			else if(ball_location < img.step) drive_robot(0.1,0.5);
-		}
-		else{		
-			drive_robot(0,0);	
-		}
+            ball_found = true;
+            break;
+        }	
     }
+    if (ball_found == true){
+        if(ball_location < img.step/3){
+            ROS_INFO_STREAM("Ball Location: LEFT");
+            drive_robot(0.1,0.5);
+        }
+		else if(ball_location < 2*img.step/3){
+            ROS_INFO_STREAM("Ball Location: CENTER");
+            drive_robot(0.5,0);
+        }
+		else if(ball_location < img.step) {
+            ROS_INFO_STREAM("Ball Location: RIGHT");
+            drive_robot(0.1,-0.5);
+        }
+    }
+    else{		
+		drive_robot(0,0);	
+	}       
+        
 }
 
 int main(int argc, char** argv)
