@@ -2,7 +2,7 @@
 # Ball Follower Robot
 This repo explain the process of localizing a white ball through a robot's onboard camera and driving a differential robot torwards the ball. This repo uses [Udacity's RoboND-simple_arm repo](https://github.com/udacity/RoboND-Simple_arm) as a guide for the pub-sub architecture. 
 
-![alt text](images/simulation.png)
+![alt text](README_images/follow.gif)
 
 ### Directory Structure
 
@@ -53,6 +53,7 @@ $ source devel/setup.bash
 ```
 
 ### Part 1: Interact with robot
+
 #### Launch simulation: load robot in Gazebo and Rviz
 From anywhere inside catkin_ws
 ```sh
@@ -68,16 +69,18 @@ Setup RViz to visualize the sensor readings. On the left side of RViz, under Dis
 - add Camera and select the Image topic that was defined in the camera Gazebo plugin: /camera/rgb/image_raw
 - add LaserScan and select the topic that was defined in the Hokuyo Gazebo plugin: /scan
 
-ADD IMAGE HERE!!!!!!!!!!!!!!!!!!!
+![alt text](README_images/ros1.PNG)
 
-Sensor stream can be viewed by the use of terminal as well. For a camera:
+Sensor stream can be called from terminal as well. For example for camera:
 ```sh
 $ rosrun image_view image_view image:=/camera/rgb/image_raw
 ```
 
 #### Drive robot around (Optional)
 There are two options to acomplish this.
-Open a new terminal window and publish velocity commands directly to the robot’s wheel actuators:
+
+##### Publishing Directly
+Open a new terminal window and publish velocity commands directly to the robot's wheel actuators. To stop vehicle publish zero values and then Ctrl + C.
 ```sh
 $ cd /home/workspace/catkin_ws/
 $ source devel/setup.bash
@@ -90,8 +93,7 @@ angular:
   y: 0.0
   z: 0.1" 
 ```
-to stop vehicle publish zero values and then Ctrl + C
-
+##### Calling the Service
 The other option is to test the service by requesting different sets of velocities from the terminal.
 
 Run the drive_bot node only
@@ -111,12 +113,12 @@ angular_z: 0.0"  # This request should drive your robot forward
 
 ### Part 2: Activate Ball Follower
 #### Launch remaining nodes
-From anywhere inside catkin_ws run drive_bot and process_image nodes
-This can be done by executing ball_chaser.launch:
+From anywhere inside catkin_ws run drive_bot and process_image nodes. This can be done by executing ball_chaser.launch:
 ```sh
 $ cd /home/workspace/catkin_ws/
 $ source devel/setup.bash
 $ roslaunch ball_chaser ball_chaser.launch
 ```
 
-ADD IMAGE HERE!!!!!!!!!!!!!
+
+![alt text](README_images/follow1.gif)
