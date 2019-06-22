@@ -6,8 +6,12 @@
   <arg name="x_init_value" default="0"/>
   <arg name="y_init_value" default="0"/>
 
+  <!-- Special arguments ('$' cannot be used twice in beteween "") -->
+  <arg name="dollar" default="$"/>
+  <arg name="find_pkg" default="(find $(arg pkg_name))"/>
+  
   <!-- Map Server -->
-  <arg name="map_file" default="$(find $(arg pkg_name))/maps/$(arg map_yaml_name)"/>
+  <arg name="map_file" default="$(arg dollar)$(arg find_pkg)/maps/$(arg map_yaml_name)"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
   <!-- AMCL Node -->
@@ -31,11 +35,12 @@
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
     
     <!--  When there are plenty of parameters, use the rosparam tag to include config files to set multiple parameters directly -->
-    <rosparam file="$(find $(arg pkg_name))/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
-    <rosparam file="$(find $(arg pkg_name))/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
-    <rosparam file="$(find $(arg pkg_name))/config/local_costmap_params.yaml" command="load" />
-    <rosparam file="$(find $(arg pkg_name))/config/global_costmap_params.yaml" command="load" />
-    <rosparam file="$(find $(arg pkg_name))/config/base_local_planner_params.yaml" command="load" />  
+    <rosparam file="$(arg dollar)$(arg find_pkg)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(arg dollar)$(arg find_pkg)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(arg dollar)$(arg find_pkg)/config/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(arg dollar)$(arg find_pkg)/config/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(arg dollar)$(arg find_pkg)/config/base_local_planner_params.yaml" command="load" />  
+    
   </node>
 
 </launch>
