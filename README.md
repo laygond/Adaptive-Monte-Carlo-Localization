@@ -1,8 +1,11 @@
 
-# Ball Follower Robot
-This repo explain the process of localizing a white ball through a robot's onboard camera and driving a differential robot torwards the ball. This repo uses [Udacity's RoboND-simple_arm repo](https://github.com/udacity/RoboND-Simple_arm) as a guide for the pub-sub architecture. 
+# Adaptive Monte Carlo Localization ROS
+This repo utilize ROS AMCL package to accurately localize a mobile robot inside a map in the Gazebo simulation environments. The 2D ground truth map is created from the Gazebo simulation using [`pgm_map_creator`](https://github.com/udacity/pgm_map_creator) ROS package and the localization is performed by the `where_am_i` ROS package. This repo uses the [Ball-Follower-Robot repo](https://github.com/laygond/Ball-Follower-Robot) as a starting point.
 
 ![alt text](README_images/follow.gif)
+
+<b>Localization:</b> Get the robot's pose, given a map of the environment.  
+<b>Adaptive:</b> dynamically adjusts the number of particles over a period of time, as the robot navigates around in a map.
 
 ## Directory Structure
 ```
@@ -39,11 +42,31 @@ This repo explain the process of localizing a white ball through a robot's onboa
 
 #### ROS Packages 
 - `my_robot` holds the robot physical design and pluggins to interact with actuators and sensors.
-- `ball_chaser`holds the nodes in charge of localizing a white ball and driving the bot torwards the ball.
-
+- `pgm_map_creator`  
+`ball_chaser`holds the nodes in charge of localizing a white ball and driving the bot torwards the ball.
+- `where_am_i` uses the final output map along with its metadata to localize a robot's pose using [ROS AMCL package](http://wiki.ros.org/amcl)
 #### ROS Nodes
 - `drive_bot` This server node will provide a ball_chaser/command_robot service to drive the robot around by controlling its linear x and angular z velocities. The service will publish a message containing the velocities to the wheel joints.
 - `process_image` This client node will subscribe to the robot’s camera images and analyze each image to determine the position of the white ball (left center or right section of screen). Once ball position is determined, the client node will request a service to drive the robot either left, right or forward.
+
+where_am_i add nodes through its amcl.launch file
+- [map_server node] (http://wiki.ros.org/map_server) provides map data as a ROS service to other nodes such as the amcl node. Here, map_server node will locate the map you created and send it out as map data.
+- [amcl node] takes odometry and laser scan data to perform the AMCL localization.
+
+You have two options to control your robot while it localize itself here:
+- Send navigation goal via RViz
+- Send move command via teleop package.
+
+- [move_base node] uses a navigation goal position provided either through RViz or terminal so that the robot will navigate to that goal position. 
+It utilizes a costmap - where each part of the map is divided into which area is occupied, like walls or obstacles, and which area is unoccupied. As the robot moves around, a local costmap, in relation to the global costmap, keeps getting updated allowing the package to define a continuous path for the robot to move along.
+
+What makes this package more remarkable is that it has some built-in corrective behaviors or maneuvers. Based on specific conditions, like detecting a particular obstacle or if the robot is stuck, it will navigate the robot around the obstacle or rotate the robot till it finds a clear path ahead.
+
+Teleop Package
+If you prefer to control your robot to help it localize itself as you did in the lab, you would need to add the teleop node to your package. Thanks to the ROS community, we could use ros-teleop package to send command to the robot using keyboard or controller.
+
+
+
 
 #### Gazebo Preexisting Plugins
 Shared object file created from compiling C++ source code. They allow interaction with Rviz and Gazebo.
@@ -51,11 +74,73 @@ Shared object file created from compiling C++ source code. They allow interactio
 - `libgazebo_ros_camera.so` is the plugin for the camera sensor. It requires the camera urdf link name and it publishes to the camera topic: /camera/rgb/image_raw topic.
 - `libgazebo_ros_laser.so` is the plugin for the hokuyo lidar. It requires hokuyo urdf link name and it publishes to the hokuyo topic: /scan.
 
+## Project Overview
+- Set up environment and robot
+- Generate ground truth map from Gazebo World
+- Build AMCL launch file
+- Select proper localization parameters
+- Add teleop node (Optional)
+
+By default, AMCL package will treat 'darker' pixels as obstacle in the pgm map file, and 'lighter' pixels as free space. The threshold could be set as a parameter which we will cover when we are building the launch file.
+
+
+## Map Creation
+We need a map so that `where_am_i` package can use it for localization. Use the Directory Structure to guide yourself thoughout this section.
+We will make use of files from the following packages in the this order:
+- my_robot
+- pgm_map_creator
+- where_am_i
+
+#### Steps
+- Place a copy of the Gazebo world from `my_robot` in the world folder from `pgm_map_creator`
+- In `pgm_map_creator` add the map creator plugin tag towards the end of the copied map file (just before </world> tag):
+```
+<plugin filename="libcollision_map_creator.so" name="collision_map_creator"/>
+```
+- In `pgm_map_creator` create a map inside the map folder using the world from the world folder by doing this:
+Open a terminal at your catkin_ws directory level and run gzerver with the map file:
+```sh
+gzserver src/pgm_map_creator/world/<YOUR GAZEBO WORLD FILE>
+```
+Open another terminal, launch the request_publisher node
+```sh
+roslaunch pgm_map_creator request_publisher.launch
+```
+- Do a quick check of the map inside map folder. If the map is cropped, you might want to adjust the parameters in `launch/request_publisher.launch`, namely the x and y values, which defines the size of the map:
+```
+  <arg name="xmin" default="-15" />
+  <arg name="xmax" default="15" />
+  <arg name="ymin" default="-15" />
+  <arg name="ymax" default="15" />
+  <arg name="scan_height" default="5" />
+  <arg name="resolution" default="0.01" />
+  ```
+Remember, the map is a [pgm file](https://en.wikipedia.org/wiki/Netpbm_format), which is simply a grayscale image file, which means you could edit it using image processing softwares.
+- Place a copy of the map file from `pgm_map_creator` in the map folder from `where_am_i`
+- Finally, in the map folder from `where_am_i`, create a yaml file providing the metadata about the map. 
+The metadata is needed by `where_am_i` so that its AMCL can treat 'darker' pixels as obstacle in the pgm map file, and 'lighter' pixels as free space. The threshold could be set as a parameters.
+In your map yaml file add the following lines:
+  ```
+image: <YOUR MAP NAME>
+resolution: 0.01
+origin: [-15.0, -15.0, 0.0]
+occupied_thresh: 0.65
+free_thresh: 0.196
+negate: 0
+  ```
+Note: if the default map size is 30 by 30, the origin will be [-15, -15, 0, 0]
 
 ## Steps to Launch Simulation
-
+Before we start, if you are working with a native ROS installation or using a VM, some of the following package might need to be installed. You could install them as shown below:
+```sh
+sudo apt-get install ros-kinetic-navigation
+sudo apt-get install ros-kinetic-map-server
+sudo apt-get install ros-kinetic-move-base
+sudo apt-get install ros-kinetic-amcl
+sudo apt-get install libignition-math2-dev protobuf-compiler
+```
 ### Create a catkin_ws (unless you already have one!)
-/home/workspace can be any directory you want
+`/home/workspace` can be any directory you want
 ```sh
 $ cd /home/workspace/
 $ mkdir -p catkin_ws/src/
