@@ -98,11 +98,11 @@ We will make use of files from the following packages in the this order:
 <plugin filename="libcollision_map_creator.so" name="collision_map_creator"/>
 ```
 - In `pgm_map_creator` create a map inside the map folder using the world from the world folder by doing this:
-Open a terminal at your catkin_ws directory level and run gzerver with the map file:
+Open a terminal at your pgm_map_creator directory level and run gzerver with the edited world file:
 ```sh
-gzserver src/pgm_map_creator/world/<YOUR GAZEBO WORLD FILE>
+gzserver world/<YOUR GAZEBO WORLD FILE>
 ```
-Open another terminal, launch the request_publisher node
+Open another terminal anywhere inside catkin_ws, launch the request_publisher node
 ```sh
 roslaunch pgm_map_creator request_publisher.launch
 ```
@@ -120,15 +120,15 @@ Remember, the map is a [pgm file](https://en.wikipedia.org/wiki/Netpbm_format), 
 - Finally, in the map folder from `where_am_i`, create a yaml file providing the metadata about the map. 
 The metadata is needed by `where_am_i` so that its AMCL can treat 'darker' pixels as obstacle in the pgm map file, and 'lighter' pixels as free space. The threshold could be set as a parameters.
 In your map yaml file add the following lines:
-  ```
+```
 image: <YOUR MAP NAME>
 resolution: 0.01
 origin: [-15.0, -15.0, 0.0]
 occupied_thresh: 0.65
 free_thresh: 0.196
 negate: 0
-  ```
-Note: if the default map size is 30 by 30, the origin will be [-15, -15, 0, 0]
+```
+Note: if the default map size is 30 by 30, the origin will be [-15, -15, 0]
 
 ## Steps to Launch Simulation
 Before we start, if you are working with a native ROS installation or using a VM, some of the following package might need to be installed. You could install them as shown below:

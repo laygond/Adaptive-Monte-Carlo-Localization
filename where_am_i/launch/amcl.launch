@@ -12,13 +12,17 @@
   
   <!-- Map Server -->
   <arg name="map_file" default="$(arg dollar)$(arg find_pkg)/maps/$(arg map_yaml_name)"/>
+    <!-- Print Map File to terminal (to double check) -->
+    <node name="pub_text" pkg="rostopic" type="rostopic" args="pub /msg std_msgs/String '$(arg map_file)'" output="screen" />
+    <node name="print_text" pkg="rostopic" type="rostopic" args="echo /msg" output="screen" />
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
-
+  
   <!-- AMCL Node -->
   <node name="amcl" pkg="amcl" type="amcl" output="screen">
     <!-- remap from="scan" to="$(arg pkg_name)/laser/scan"/ -->
     <!-- Find the purpose of the parameters added below at (http://wiki.ros.org/amcl): -->
     <param name="odom_frame_id" value="odom"/>
+    <param name="transform_tolerance" value="0.4"/>
     <param name="odom_model_type" value="diff-corrected"/> <!-- "diff", "omni", "diff-corrected" or "omni-corrected" -->
     <param name="base_frame_id" value="robot_footprint"/>
     <param name="global_frame_id" value="map"/>
