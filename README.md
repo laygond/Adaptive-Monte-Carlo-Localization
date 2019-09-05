@@ -17,32 +17,32 @@ In this repo a robot uses a Hokuyo laser scanner and the Adaptive Monte Carlo Lo
 ```
 .Adaptive-Monte-Carlo-Localization
 ├── README.md
-├── README_images						# Images used by README.md
+├── README_images                       # Images used by README.md
 |   └── ...
-├── .gitignore							# ignores the inclusion of all map.pgm files in this repo (they are heavy)
+├── .gitignore                          # ignores the inclusion of all map.pgm files in this repo (they are heavy)
 ├── my_robot
-|   ├── CMakeLists.txt					# Compiler Instructions
-|   ├── package.xml						# Package Info
+|   ├── CMakeLists.txt                  # Compiler Instructions
+|   ├── package.xml                     # Package Info
 |   ├── launch
-|   |   ├── robot_description.launch	# Used by world.launch to launch robot
-|   |   └── world.launch				# Launches world & robot in Gazebo and Rviz 
-|   ├── meshes							# Used in my_robot.xacro for visual appearance
+|   |   ├── robot_description.launch    # Used by world.launch to launch robot
+|   |   └── world.launch                # Launches world & robot in Gazebo and Rviz 
+|   ├── meshes                          # Used in my_robot.xacro for visual appearance
 |   |   ├── camera.dae
 |   |   └── hokuyo.dae
 |   ├── urdf
-|   |   ├── my_robot.gazebo				# Gazebo Plugins: Robot's sensors
-|   |   └── my_robot.xacro				# Robot 
+|   |   ├── my_robot.gazebo             # Gazebo Plugins: Robot's sensors
+|   |   └── my_robot.xacro              # Robot 
 |   └── worlds
-|       ├── empty.world					# Extra world
-|       └── my_sexy_world.world			# Main world
+|       ├── empty.world                 # Extra world
+|       └── my_sexy_world.world         # Main world
 |
 ├── pgm_map_creator
 │   ├── CMakeLists.txt
 │   ├── package.xml
 │   ├── launch
-│   │   └── request_publisher.launch	# launches nodes for map creation
+│   │   └── request_publisher.launch    # launches nodes for map creation
 │   ├── maps
-│   │   └── map.pgm						# Output: 2D map generated
+│   │   └── map.pgm                     # Output: 2D map generated
 │   ├── msgs
 │   │   ├── CMakeLists.txt
 │   │   └── collision_map_request.proto
@@ -50,21 +50,21 @@ In this repo a robot uses a Hokuyo laser scanner and the Adaptive Monte Carlo Lo
 │   │   ├── collision_map_creator.cc
 │   │   └── request_publisher.cc
 │   └── world
-│       └── my_sexy_world.world			# Input: edited map (main world + map pluging)
+│       └── my_sexy_world.world         # Input: edited map (main world + map pluging)
 │        
 └── where_am_i
     ├── CMakeLists.txt
     ├── package.xml
-    ├── config							# More Parameters nicely written for amcl.launch to use 
+    ├── config                          # More Parameters nicely written for amcl.launch to use 
     │   ├── base_local_planner_params.yaml
     │   ├── costmap_common_params.yaml
     │   ├── global_costmap_params.yaml
     │   ├── local_costmap_params.yaml
     ├── launch
-    │   └── amcl.launch					# launches the node to read map, apply AMCL, navigate robot
+    │   └── amcl.launch                 # launches the node to read map, apply AMCL, navigate robot
     └── maps
-        ├── map.pgm						# Copy of output map from pgm_map_creator
-        └── map.yaml					# map description for amcl node to apply thresholding
+        ├── map.pgm                     # Copy of output map from pgm_map_creator
+        └── map.yaml                    # map description for amcl node to apply thresholding
 ```
 
 #### ROS Packages 
@@ -189,6 +189,8 @@ From anywhere inside catkin_ws
 ```sh
 $ roslaunch my_robot world.launch
 ```
+
+![alt text][image4]
 
 ## Localize Robot: AMCL
 From anywhere inside catkin_ws
