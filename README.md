@@ -1,8 +1,14 @@
 
 # Adaptive Monte Carlo Localization ROS
-This repo utilize ROS AMCL package to accurately localize a mobile robot inside a map in the Gazebo simulation environments. The 2D ground truth map is created from the Gazebo simulation using [`pgm_map_creator`](https://github.com/udacity/pgm_map_creator) ROS package and the localization is performed by the `where_am_i` ROS package. This repo uses the [Ball-Follower-Robot repo](https://github.com/laygond/Ball-Follower-Robot) as a starting point.
+In this repo a robot uses a Hokuyo laser scanner and the Adaptive Monte Carlo Localization to localize itself inside a simulation environment. The 2D ground truth map is created from the Gazebo simulation using [`pgm_map_creator`](https://github.com/udacity/pgm_map_creator) package and the localization is performed by the `where_am_i` package by integrating the ROS AMCL package. This repo uses the [Ball-Follower-Robot repo](https://github.com/laygond/Ball-Follower-Robot) as a starting point.
 
-![alt text](README_images/follow.gif)
+[//]: # (Image References)
+[image1]: ./README_images/follow.gif
+[image2]: ./README_images/colormap.PNG
+[image3]: ./README_images/negromap.PNG
+[image4]: ./README_images/ros1.PNG
+
+![alt text][image1]
 
 <b>Localization:</b> Get the robot's pose, given a map of the environment.  
 <b>Adaptive:</b> dynamically adjusts the number of particles over a period of time, as the robot navigates around in a map.
@@ -81,7 +87,7 @@ In `my_robot.gazebo` you find the following plugins to interact with Rviz and Ga
 
 ## Project Overview
 
-![alt text](README_images/follow.gif)
+![alt text][image1]
 - General Initial Set Up
 - Generate ground truth map from Gazebo World
 - Launch world environment and robot
@@ -99,10 +105,37 @@ $ sudo apt-get install ros-kinetic-teleop-twist-keyboard
 $ sudo apt-get install libignition-math2-dev protobuf-compiler
 ```
 
+## General Initial Setup
+#### Create a catkin_ws (unless you already have one!)
+This can be done at any any directory level you want
+```sh
+$ mkdir -p catkin_ws/src/
+$ cd catkin_ws/src/
+$ catkin_init_workspace
+```
+#### Clone the repo (in catkin_ws/src/)
+```sh
+$ git clone https://github.com/laygond/Adaptive-Monte-Carlo-Localization.git
+```
+#### Install packages Dependencies (in catkin_ws/, therefore:)
+```sh
+$ cd ..
+$ source devel/setup.bash
+$ rosdep -i install my_robot
+$ rosdep -i install pgm_map_creator
+$ rosdep -i install where_am_i
+```
+#### Build packages (in catkin_ws/)
+```sh
+$ catkin_make
+$ source devel/setup.bash
+```
+<b>Note:</b> whenever it is specified to open a new terminal do not forget to source your catkin_ws like the previous line.
+
 ## Map Creation
 We need a map so that `where_am_i` package can use it for localization. Use the Directory Structure to guide yourself thoughout this section.
 
-![alt text](README_images/follow.gif) ![alt text](README_images/follow.gif)
+![alt text][image2]  ![alt text][image3]
 
 We will make use of files from the following packages in the this order:
 - my_robot
@@ -134,8 +167,11 @@ roslaunch pgm_map_creator request_publisher.launch
   <arg name="resolution" default="0.01" />
   ```
 Remember, the map is a [pgm file](https://en.wikipedia.org/wiki/Netpbm_format), which is simply a grayscale image file, which means you could edit it using image processing softwares.
+
 5. Place a copy of the map file from `pgm_map_creator` in the map folder from `where_am_i`
-6. Finally, in the map folder from `where_am_i`, create a yaml file providing the metadata about the map. 
+
+6. Finally, in the map folder from `where_am_i`, create a yaml file providing the metadata about the map.
+
 The metadata is needed by `where_am_i` so that its AMCL can treat 'darker' pixels as obstacle in the pgm map file, and 'lighter' pixels as free space. The threshold could be set as a parameters.
 In your map yaml file add the following lines:
 ```
@@ -148,73 +184,29 @@ negate: 0
 ```
 Note: if the default map size is 30 by 30, the origin will be [-15, -15, 0]
 
-#### Move Robot Around
-You have two options to control your robot while it localize itself:
-- Send navigation goal via RViz to `move_base node` 
-- Send move command via teleop_twist_keyboard package.
-
-
-## Steps to Launch Simulation
-### Create a catkin_ws (unless you already have one!)
-This can be done at any any directory level you want
-```sh
-$ mkdir -p catkin_ws/src/
-$ cd catkin_ws/src/
-$ catkin_init_workspace
-```
-
-### Clone the repo in catkin_ws/src/
-```sh
-$ git clone https://github.com/laygond/Ball-Follower-Robot.git
-```
-
-### Install packages Dependencies
-```sh
-$ cd /home/workspace/catkin_ws
-$ source devel/setup.bash
-$ rosdep -i install my_robot
-$ rosdep -i install where_am_i
-```
-
-### Build packages
-```sh
-$ cd /home/workspace/catkin_ws/ 
-$ catkin_make
-$ source devel/setup.bash
-```
----
-## Part 1: Interact with robot
-
-### Launch simulation: load robot in Gazebo and Rviz
+## Launch world simulation: load robot in Gazebo and Rviz
 From anywhere inside catkin_ws
 ```sh
 $ roslaunch my_robot world.launch
 ```
 
-### Read RViz Sensor Stream
-Setup RViz to visualize the sensor readings. On the left side of RViz, under Displays:
-
-- Select odom for fixed frame
-- Click the Add button located in the bottom and
-- add RobotModel and your robot model should load up in RViz.
-- add Camera and select the Image topic that was defined in the camera Gazebo plugin: /camera/rgb/image_raw
-- add LaserScan and select the topic that was defined in the Hokuyo Gazebo plugin: /scan
-
-![alt text](README_images/ros1.PNG)
-
-Sensor stream can be called from terminal as well. For example for camera:
+## Localize Robot: AMCL
+From anywhere inside catkin_ws
 ```sh
-$ rosrun image_view image_view image:=/camera/rgb/image_raw
+$ roslaunch where_am_i amcl.launch
 ```
 
-### Drive robot around (Optional)
-There are two options to acomplish this.
+![alt text][image4]
+
+## Move Robot Around
+You have several options to control your robot while it localize itself:
+- Send navigation goal via RViz to `move_base node` 
+- Send move command via teleop_twist_keyboard package.
+- ... and publishing directly to the wheel actuators 
 
 #### Publishing Directly
-Open a new terminal window and publish velocity commands directly to the robot's wheel actuators. To stop vehicle publish zero values and then Ctrl + C.
+Open a new terminal window anywhere in the catkin_ws and publish velocity commands directly to the robot's wheel actuators. To stop vehicle publish zero values and then Ctrl + C.
 ```sh
-$ cd /home/workspace/catkin_ws/
-$ source devel/setup.bash
 $ rostopic pub /cmd_vel geometry_msgs/Twist  "linear:
   x: 0.1
   y: 0.0
@@ -224,31 +216,3 @@ angular:
   y: 0.0
   z: 0.1" 
 ```
-#### Calling the Service
-The other option is to test the service by requesting different sets of velocities from the terminal.
-
-Run the drive_bot node only
-```sh
-$ cd /home/workspace/catkin_ws/
-$ source devel/setup.bash
-$ rosrun ball_chaser drive_bot
-```
-
-Open a new terminal while all the nodes are running and type:
-```sh
-$ cd /home/workspace/catkin_ws/
-$ source devel/setup.bash
-$ rosservice call /ball_chaser/command_robot "linear_x: 0.5
-angular_z: 0.0"  # This request should drive your robot forward
-```
-
-## Part 2: Activate Ball Follower
-### Launch remaining nodes
-From anywhere inside catkin_ws run drive_bot and process_image nodes. This can be done by executing ball_chaser.launch:
-```sh
-$ cd /home/workspace/catkin_ws/
-$ source devel/setup.bash
-$ roslaunch ball_chaser ball_chaser.launch
-```
-
-![alt text](README_images/follow1.gif)
