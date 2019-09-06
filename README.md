@@ -73,7 +73,8 @@ In this repo a robot uses a Hokuyo laser scanner and the Adaptive Monte Carlo Lo
 - `where_am_i` uses the final output map along with its metadata to localize a robot's pose using [ROS AMCL package](http://wiki.ros.org/amcl)
 
 #### ROS Nodes
-- [ROS Teleop](http://wiki.ros.org/teleop_twist_keyboard) ROS teleop package sends command to the robot using keyboard or controller. 
+- [teleop_twist_keyboard node](http://wiki.ros.org/teleop_twist_keyboard) sends command to /cmd_vel topic so that the robot can navigate from keyboard or controller.
+
 `where_am_i` add nodes through its amcl.launch file:
 - [map_server node] (http://wiki.ros.org/map_server) provides map data as a ROS service to other nodes such as the amcl node. Here, map_server node will locate the map you created and send it out as map data.
 - [amcl node] takes odometry and laser scan data to perform the AMCL localization.
@@ -218,3 +219,9 @@ angular:
   y: 0.0
   z: 0.1" 
 ```
+#### Teleop Robot
+Open new terminal and from anywhere inside catkin_ws
+```sh
+$ rosrun teleop_twist_keyboard teleop_twist_keyboard.py
+```
+
