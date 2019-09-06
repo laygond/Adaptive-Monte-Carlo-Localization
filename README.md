@@ -76,9 +76,9 @@ In this repo a robot uses a Hokuyo laser scanner and the Adaptive Monte Carlo Lo
 - [teleop_twist_keyboard node](http://wiki.ros.org/teleop_twist_keyboard) sends command to /cmd_vel topic so that the robot can navigate from keyboard or controller.
 
 `where_am_i` add nodes through its amcl.launch file:
-- [map_server node] (http://wiki.ros.org/map_server) provides map data as a ROS service to other nodes such as the amcl node. Here, map_server node will locate the map you created and send it out as map data.
-- [amcl node] takes odometry and laser scan data to perform the AMCL localization.
-- [move_base node] uses a navigation goal position provided either through RViz or shell so that the robot will navigate to that goal position. It utilizes a costmap to determine occupied and unoccupied areas. As the robot moves around, a local costmap, in relation to the global costmap, keeps getting updated allowing the robot to move along and around the obstacle.
+- [map_server node](http://wiki.ros.org/map_server) provides map data as a ROS service to other nodes such as the amcl node. Here, map_server node will locate the map you created and send it out as map data.
+- [amcl node](http://wiki.ros.org/amcl) takes odometry and laser scan data to perform the AMCL localization.
+- [move_base node](http://wiki.ros.org/move_base) uses a navigation goal position provided either through RViz or shell so that the robot will navigate to that goal position. It utilizes a costmap to determine occupied and unoccupied areas. As the robot moves around, a local costmap, in relation to the global costmap, keeps getting updated allowing the robot to move along and around the obstacle.
 
 #### Gazebo Preexisting Plugins
 In `my_robot.gazebo` you find the following plugins to interact with Rviz and Gazebo.
